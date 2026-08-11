@@ -1,26 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
+  --font-cinzel: 'Cinzel', serif;
+  --font-inter: 'Inter', sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-cinzel);
+  --font-sans: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  background: var(--background);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* Custom WebGL Canvas container styling */
+canvas {
+  touch-action: none;
+}
+
+@font-face {
+  font-family: "Orelo-sw-db";
+  src: url(data:font/truetype;charset=utf-8;base64,T1RUTwAMAIAAAwBAQ0ZGICKM+QwAABCoAABdF0dERUYReRGAAABtwAAAAJpHUE9TnjkR0wAAblwAAD0AR1NVQlceV5QAAKtcAAAInE9TLzJpfoQNAAAG6AAAAGBjbWFwlYcGlAAADGAAAAQmaGVhZBKYJeUAAADUAAAANmhoZWEGmgVgAAAGxAAAACRobXR4D2gSMgAAAQwAAAW4bWF4cAFuUAAAAADMAAAABm5hbWUuNiedAAAHSAAABRVwb3N0/6IABwAAEIgAAAAgAABQAAFuAAAAAQAAAAEAABBnHmJfDzz1AAMD6AAAAADYaPFDAAAAANho8UP98f78BL4DgwAAAAMAAgAAAAAAAAH0AF0A9gAAAusAEQLrABEC6wARAusAEQLrABEC6wARAusAEQLrABEC6wARAusAEQRxAAACuAAtAsMAHgLDAB4CwwAeAsMAHgLDAB4C6AAtAuj/5QLoAC0C6P/lAnUALQJ1AC0CdQAtAnUALQJ1AC0CdQAtAnUALQJ1AC0CdQAtAl4ALQLhAB4C4QAeAuEAHgLhAB4C0AAtAtD/9ADFAC0AxQAnAMX/1wDF/+cAxQAtAMX/+wDF/88AxQAnAjgADAKuAC0CrgAtAmMALQJjAC0CYwAtAmMALQJjAC0CY//fA1EALQKyAC0CsgAtArIALQKyAC0CsgAtArIALQMhAB4DIQAeAyEAHgMhAB4DIQAeAyEAHgMhAB4DIQAeAyEAHgTT/+kCoAAtArEALQMhAB4CwAAtAsAALQLAAC0CwAAtApgAIQKYACECmAAhApgAIQKYACEC2wASAtsAEgLbABIC2wASAtsAEgKRACoCkQAqApEAKgKRACoCkQAqApEAKgKRACoCkQAqApEAKgLEAA8EjAAMBIwADASMAAwEjAAMBIwADAKaAA4CvwAMAr8ADAK/AAwCvwAMAr8ADAKbACYCmwAmApsAJgKbACYCvAA5ArwAOQK8ADkCvAA5AmIAHgJiAB4CYgAeAmIAHgJiAB4CYgAeAmIAHgJiAB4CYgAeAmIAHgODAB4CZwAtAjIAHgIyAB4CMgAeAjIAHgIyAB4CagAhAlYAHgLiACECagAhAjAAHgIwAB4CMAAeAjAAHgIwAB4CMAAeAjAAHgIwAB4CMAAeAiAAAgJgACMCVAAjAlQAIwJUACMCRQAtAkX//wDgAC0AwwAtAOoANgDq/+YA6v/3AMMAHwDqAAIAw//OAOAALQDO/00Ay/9NAjAALQIwAC0AwwAtAMMAJgE7AC0Aw//+AVsALQDD//UDjwAtAkUALQJFAC0CRQAtAkUALQJFAC0CRQAtAmYAHgJmAB4CZgAeAmYAHgJmAB4CZgAeAmYAHgJmAB4CZgAeA64AHgJnAC0CZwAtAmwAIQHTAC0B0wAtAdMALQHTAAsCCAAeAggAHgIIAB4CCAAeAggAHgIsAC0CAgADAgIAAwIMAAMCAgADAgIAAwJDACsCQwArAkMAKwJDACsCQwArAkMAKwJDACsCQwArAkMAKwIGAA0DewAPA3sADwN7AA8DewAPA3sADwISAAwB9AAIAfQACAH0AAgF4H1n+QAA/mA==);
+}
+
+.font-orelo {
+  font-family: "Orelo-sw-db", serif;
+}
+

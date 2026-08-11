@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>An Infinite Garden for Her 🌸</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --accent: #ff6b8a;
+      --accent-soft: #ffb3c6;
+      --paper: #f6ecd9;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #1a0205 0%, #060002 60%, #010001 100%);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      cursor: pointer;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    #ui {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      pointer-events: none;
+      letter-spacing: 2px;
+      font-style: italic;
+      z-index: 10;
+      font-size: 14px;
+      text-shadow: 0 0 10px rgba(255, 107, 138, 0.5);
+    }
+
+    /* Floating Text Container */
+    .floating-text {
+      position: absolute;
+      pointer-events: none;
+      font-family: 'Georgia', serif;
+      font-style: italic;
+      z-index: 20;
+      text-shadow: 0 0 30px rgba(255, 100, 150, 0.8);
+      transition: all 3.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Theme Selector */
+    #themeSelector {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      display: flex;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 12px 20px;
+      border-radius: 30px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    #themeSelector button {
+      width: 32px;
+      height: 32px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    #themeSelector button:hover {
+      transform: scale(1.2);
+      border-color: white;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    #themeSelector button.active {
+      border-color: white;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+      transform: scale(1.15);
+    }
+
+    /* Anniversary Timer */
+    #timer {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-align: center;
+      font-family: 'Georgia', serif;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 8px 20px;
+      border-radius: 20px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      white-space: nowrap;
+      max-width: 92vw;
+    }
+
+    #timer span {
+      color: rgba(255, 200, 150, 0.95);
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    /* Photo watermark */
+    #photoWatermark {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10;
+      opacity: 0.4;
+      font-size: 22px;
+      color: rgba(255, 200, 200, 0.6);
+      font-family: 'Dancing Script', cursive;
+      letter-spacing: 2px;
+      pointer-events: none;
+      text-shadow: 0 0 20px rgba(255, 100, 150, 0.5);
+    }
+
+    /* Music Button */
+    #musicBtn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.9);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    #musicBtn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    /* Heart Counter */
+    #heartCounter {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 15;
+      color: rgba(255, 100, 150, 0.9);
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      letter-spacing: 1px;
+      pointer-events: none;
+    }
+
+    /* Lock screen disabled */
+    #lockScreen {
+      display: none !important;
+    }
+
+    /* SCENE SYSTEM */
+    #app {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .scene {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 1s ease;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .scene.scrollable {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .scene.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      z-index: 6;
+    }
+
+    #gardenContinue {
+      display: none;
+    }
+
+    .scene-continue {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.95);
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: transform .3s ease, background .3s ease;
+    }
+
+    .scene-continue:hover {
+      transform: translateX(-50%) translateY(-4px);
+      background: rgba(0, 0, 0, 0.75);
+    }
+
+    .scene-continue .arrow {
+      display: inline-block;
+      animation: bob 1.8s ease-in-out infinite;
+      margin-left: 6px;
+    }
+
+    @keyframes bob {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(6px);
+      }
+    }
+
+    /* SCENE NAV DOTS */
+    #sceneNav {
+      position: fixed;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #sceneNav .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: all .3s ease;
+    }
+
+    #sceneNav .dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      transform: scale(1.3);
+    }
+
+    /* GALLERY */
+    #scene-gallery {
+      background: radial-gradient(circle at 50% 20%, #1c0a12 0%, #080205 70%, #000 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    .chapter-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: #ffe3ea;
+      font-size: clamp(24px, 4vw, 38px);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      text-align: center;
+      text-shadow: 0 0 30px rgba(255, 107, 138, 0.35);
+    }
+
+    .chapter-sub {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin-bottom: 40px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .gallery-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 34px;
+      max-width: 1100px;
+    }
+
+    .polaroid {
+      width: 190px;
+      background: #faf6ee;
+      padding: 14px 14px 46px;
+      border-radius: 4px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+      position: relative;
+      cursor: default;
+      transition: transform .4s ease, box-shadow .4s ease;
+    }
+
+    .polaroid:hover {
+      transform: scale(1.06) rotate(0deg) !important;
+      box-shadow: 0 25px 60px rgba(255, 107, 138, 0.4);
+      z-index: 5;
+    }
+
+    .polaroid-photo {
+      width: 100%;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      border-radius: 2px;
+      background: linear-gradient(135deg, #3a1420, #1a0810);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .polaroid-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .polaroid-fallback-emoji {
+      font-size: 46px;
+    }
+
+    .polaroid-caption {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: 'Dancing Script', cursive;
+      font-size: 18px;
+      color: #3a2a2a;
+    }
+
+    /* TIMELINE */
+    #scene-timeline {
+      background: radial-gradient(circle at 50% 30%, #180810 0%, #060204 70%, #000 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 70px 20px;
+    }
+
+    .timeline-wrap {
+      max-width: 640px;
+      width: 100%;
+    }
+
+    .timeline-track {
+      position: relative;
+      padding-left: 34px;
+    }
+
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--accent), var(--accent-soft), var(--accent), transparent);
+      opacity: .6;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 46px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -34px;
+      top: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 14px var(--accent);
+    }
+
+    .timeline-item h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: #ffe3ea;
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .timeline-item p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* LETTER */
+    #scene-letter {
+      background: radial-gradient(circle at 50% 30%, #1c0a12 0%, #080205 75%, #000 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    .voice-btn {
+      margin-bottom: 34px;
+      padding: 14px 30px;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffe3ea;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: all .3s ease;
+    }
+
+    .letter-paper {
+      width: min(90vw, 520px);
+      max-height: 60vh;
+      overflow-y: auto;
+      background: var(--paper);
+      border-radius: 4px;
+      padding: 40px 36px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+      font-family: 'Dancing Script', cursive;
+      color: #3d2b20;
+      font-size: 22px;
+      line-height: 1.9;
+    }
+
+    .letter-line {
+      margin-bottom: 12px;
+    }
+
+    /* SECRET OVERLAY */
+    #secretOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: radial-gradient(circle at 50% 40%, #1a0208 0%, #000 80%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .8s ease, visibility .8s ease;
+      text-align: center;
+      padding: 30px;
+    }
+
+    #secretOverlay.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    #secretOverlay p {
+      font-family: 'Dancing Script', cursive;
+      color: #ffb3c6;
+      font-size: clamp(22px, 4vw, 34px);
+      max-width: 600px;
+      line-height: 1.6;
+      text-shadow: 0 0 30px rgba(255, 107, 138, 0.5);
+    }
+
+    #secretClose {
+      margin-top: 30px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 13px;
+      letter-spacing: 2px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Hidden secret message overlay -->
+  <div id="secretOverlay">
+    <p id="secretMessage">You found the secret cosmic garden. 🤫<br>Sirivalli Purna, even in silence, you're the loudest
+      thought in my mind.</p>
+    <div id="secretClose">close</div>
+  </div>
+
+  <!-- Background music -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="/audio/song.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Scene navigation dots -->
+  <div id="sceneNav">
+    <div class="dot active" data-scene="garden" title="The Garden"></div>
+    <div class="dot" data-scene="gallery" title="Memories"></div>
+    <div class="dot" data-scene="timeline" title="Our Story"></div>
+    <div class="dot" data-scene="letter" title="The Letter"></div>
+  </div>
+
+  <div id="app">
+
+    <!-- GARDEN SCENE -->
+    <div class="scene active" id="scene-garden">
+      <div id="ui">🌸 Click anywhere to plant a flower 🌸</div>
+      <div id="timer">❤️ <span id="daysCount">148+</span> days since I fell for you ❤️</div>
+      <div id="heartCounter">💕 <span id="flowerCount">0</span> flowers of love</div>
+      <div id="photoWatermark">🌹 For My Purna</div>
+
+      <button id="musicBtn">🎵 Play Music</button>
+
+      <div id="themeSelector">
+        <button class="active" data-color="pink" style="background:#ff6b8a;" title="Pink"></button>
+        <button data-color="red" style="background:#ff0040;" title="Red"></button>
+        <button data-color="purple" style="background:#9b59b6;" title="Purple"></button>
+        <button data-color="gold" style="background:#f1c40f;" title="Gold"></button>
+        <button data-color="blue" style="background:#3498db;" title="Blue"></button>
+        <button data-color="rainbow" style="background:linear-gradient(135deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff);"
+          title="Rainbow"></button>
+      </div>
+
+      <canvas id="c"></canvas>
+      <div class="scene-continue" id="gardenContinue">Continue the story <span class="arrow">↓</span></div>
+    </div>
+
+    <!-- PHOTO GALLERY -->
+    <div class="scene scrollable" id="scene-gallery">
+      <div class="chapter-heading">Our Memories</div>
+      <div class="chapter-sub">Five cosmic moments, kept forever</div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+      <div class="scene-continue" data-next="timeline">Continue <span class="arrow">↓</span></div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="scene scrollable" id="scene-timeline">
+      <div class="timeline-wrap">
+        <div class="chapter-heading">Our Story</div>
+        <div class="chapter-sub" style="margin-bottom:34px;">A timeline of us</div>
+        <div class="timeline-track" id="timelineTrack"></div>
+      </div>
+      <div class="scene-continue" data-next="letter">Continue <span class="arrow">↓</span></div>
+    </div>
+
+    <!-- LOVE LETTER -->
+    <div class="scene scrollable" id="scene-letter">
+      <div class="chapter-heading">A Letter, Just For You</div>
+      <div class="chapter-sub">and something I wanted you to hear</div>
+      <button class="voice-btn" id="voiceBtn">▶ Play Voice Message</button>
+      <div class="letter-paper" id="letterPaper"></div>
+      <div class="scene-continue" data-next="garden">Walk Through Garden Again <span class="arrow">↺</span></div>
+    </div>
+
+  </div>
+
+  <script>
+    /* CONFIG & STATE */
+    const HER_NAME = "Sirivalli Purna";
+    const LOVE_START_DATE = '2024-07-04';
+    const SCENES = ['garden', 'gallery', 'timeline', 'letter'];
+    let currentScene = 'garden';
+
+    const GALLERY_PHOTOS = [
+      { caption: 'First Day', emoji: '🌷', grad: 'linear-gradient(135deg,#4a1030,#7a1f3d)' },
+      { caption: 'That Laugh', emoji: '💫', grad: 'linear-gradient(135deg,#2a1035,#5a2a5f)' },
+      { caption: 'Our Trip', emoji: '🌹', grad: 'linear-gradient(135deg,#3a0a1a,#8a1f3a)' },
+      { caption: 'Quiet Moments', emoji: '🕊️', grad: 'linear-gradient(135deg,#1a1a35,#3a2a55)' },
+      { caption: 'Us', emoji: '💞', grad: 'linear-gradient(135deg,#4a0f25,#9a2a4a)' }
+    ];
+
+    const TIMELINE_EVENTS = [
+      { title: 'First Meet', text: 'The day our paths crossed, and everything quietly changed.' },
+      { title: 'Best Memories', text: 'Every small moment with you that somehow became unforgettable.' },
+      { title: 'Dreams', text: 'The future we talked about under the stars, late at night.' },
+      { title: 'Distance', text: 'The miles that tried to change nothing, and mostly failed.' },
+      { title: 'Today', text: 'Still here. Still thinking of you, Purna. Still growing this garden.' }
+    ];
+
+    const LETTER_LINES = [
+      "My dearest Sirivalli Purna,",
+      "If you're reading this, it means you made it through the whole garden —",
+      "every flower, every memory, every quiet little truth I planted for you.",
+      "I don't always know how to say what I feel out loud,",
+      "so I built this instead. A place that remembers you the way I do.",
+      "Thank you for being the reason any of this bloomed at all.",
+      "— Always yours ❤️"
+    ];
+
+    /* SCENE SWITCHING */
+    function goToScene(name) {
+      SCENES.forEach(s => {
+        const el = document.getElementById('scene-' + s);
+        if (el) el.classList.toggle('active', s === name);
+      });
+      currentScene = name;
+
+      const nav = document.getElementById('sceneNav');
+      if (nav) {
+        nav.querySelectorAll('.dot').forEach(d => d.classList.toggle('active', d.dataset.scene === name));
+      }
+
+      if (name === 'gallery') buildGallery();
+      if (name === 'timeline') buildTimeline();
+      if (name === 'letter') buildLetter();
+    }
+
+    document.querySelectorAll('#sceneNav .dot').forEach(dot => {
+      dot.addEventListener('click', () => goToScene(dot.dataset.scene));
+    });
+    document.querySelectorAll('.scene-continue[data-next]').forEach(btn => {
+      btn.addEventListener('click', () => goToScene(btn.dataset.next));
+    });
+    document.getElementById('gardenContinue').addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToScene('gallery');
+    });
+
+    /* BUILDERS */
+    function buildGallery() {
+      const grid = document.getElementById('galleryGrid');
+      if (!grid || grid.children.length > 0) return;
+      GALLERY_PHOTOS.forEach((photo) => {
+        const card = document.createElement('div');
+        card.className = 'polaroid';
+        card.innerHTML = `
+      <div class="polaroid-photo" style="background:${photo.grad}">
+        <span class="polaroid-fallback-emoji">${photo.emoji}</span>
+      </div>
+      <div class="polaroid-caption">${photo.caption}</div>
+    `;
+        grid.appendChild(card);
+      });
+    }
+
+    function buildTimeline() {
+      const track = document.getElementById('timelineTrack');
+      if (!track || track.children.length > 0) return;
+      TIMELINE_EVENTS.forEach(ev => {
+        const item = document.createElement('div');
+        item.className = 'timeline-item';
+        item.innerHTML = `<h3>${ev.title}</h3><p>${ev.text}</p>`;
+        track.appendChild(item);
+      });
+    }
+
+    function buildLetter() {
+      const paper = document.getElementById('letterPaper');
+      if (!paper || paper.children.length > 0) return;
+      LETTER_LINES.forEach((line) => {
+        const p = document.createElement('div');
+        p.className = 'letter-line';
+        p.textContent = line;
+        paper.appendChild(p);
+      });
+    }
+
+    /* MUSIC PLAYBACK */
+    const bgMusic = document.getElementById('bgMusic');
+    let musicOn = false;
+    function tryPlayMusic() {
+      if (!bgMusic) return;
+      bgMusic.volume = 0.5;
+      bgMusic.play().then(() => {
+        musicOn = true;
+        const btn = document.getElementById('musicBtn');
+        if (btn) btn.textContent = '🔊 Music On';
+      }).catch(() => {
+        musicOn = false;
+        const btn = document.getElementById('musicBtn');
+        if (btn) btn.textContent = '🎵 Play Music';
+      });
+    }
+
+    document.getElementById('musicBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!musicOn) {
+        tryPlayMusic();
+      } else {
+        bgMusic.pause();
+        musicOn = false;
+        document.getElementById('musicBtn').textContent = '🎵 Play Music';
+      }
+    });
+
+    /* THEME SYSTEM */
+    let themeColor = 'pink';
+    document.querySelectorAll('#themeSelector button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        themeColor = btn.dataset.color || 'pink';
+        document.querySelectorAll('#themeSelector button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    function getThemeColors() {
+      switch (themeColor) {
+        case 'red': return { c1: '#ff0040', c2: '#ff3366', c3: '#ff6b8a' };
+        case 'purple': return { c1: '#9b59b6', c2: '#bb8fce', c3: '#d7bde2' };
+        case 'gold': return { c1: '#f1c40f', c2: '#f7dc6f', c3: '#f9e79f' };
+        case 'blue': return { c1: '#3498db', c2: '#5dade2', c3: '#85c1e9' };
+        case 'rainbow': return {
+          c1: `hsl(${Math.random() * 360}, 100%, 60%)`,
+          c2: `hsl(${Math.random() * 360}, 100%, 70%)`,
+          c3: `hsl(${Math.random() * 360}, 100%, 80%)`
+        };
+        default: return { c1: '#ff6b8a', c2: '#ff8fa3', c3: '#ffb3c6' };
+      }
+    }
+
+    /* CANVAS & ANIMATION ENGINE */
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    let W = 800, H = 600, CX = 400, BASE = 550, SC = 1;
+
+    function resize() {
+      W = canvas.width = window.innerWidth || 800;
+      H = canvas.height = window.innerHeight || 600;
+      CX = W / 2;
+      BASE = H * 0.95;
+      SC = Math.min(W, H) / 700;
+      if (W < 600) SC = W / 350;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const flowers = [];
+    const hearts = [];
+    const fireflies = [];
+    let flowerCount = 0;
+
+    const loveMessages = [
+      "I love you 🌹", "You're my sunshine ☀️", "Forever yours 💕",
+      "You make me smile 😊", "My heart beats for you Purna 💓",
+      "You're beautiful 🌺", "Thinking of you 💭", "My everything 🌷",
+      "You're amazing ✨", "Perfect in every way 🌟", "My dream come true 💫",
+      "Love you more than words 💖", "You're my world 🌍",
+      "Simply the best 🏆", "My queen 👑", "You're magical 🦋"
+    ];
+
+    function showFloatingText(x, y, text) {
+      const el = document.createElement('div');
+      el.className = 'floating-text';
+      el.textContent = text;
+      const colors = getThemeColors();
+      const size = 20 + Math.random() * 16;
+      const xOffset = (Math.random() - 0.5) * 80;
+
+      el.style.cssText = `
+    left: ${x + xOffset}px;
+    top: ${y}px;
+    color: ${colors.c1};
+    font-size: ${size}px;
+    text-shadow: 0 0 30px ${colors.c1}80;
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  `;
+      document.body.appendChild(el);
+
+      requestAnimationFrame(() => {
+        el.style.opacity = '1';
+        el.style.transform = `translateY(-70px) scale(1.1)`;
+      });
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = `translateY(-140px) scale(0.8)`;
+      }, 2200);
+      setTimeout(() => el.remove(), 3200);
+    }
+
+    function createHearts(x, y) {
+      const colors = getThemeColors();
+      for (let i = 0; i < 16; i++) {
+        hearts.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 6,
+          vy: -2 - Math.random() * 5,
+          size: 10 + Math.random() * 16,
+          life: 1,
+          color: i % 2 === 0 ? colors.c1 : colors.c2,
+          rotation: Math.random() * Math.PI * 2,
+          rotSpeed: (Math.random() - 0.5) * 0.1
+        });
+      }
+    }
+
+    /* FIREFLIES & STARS */
+    for (let i = 0; i < 30; i++) {
+      fireflies.push({
+        x: Math.random() * 800,
+        y: Math.random() * 600,
+        size: 2 + Math.random() * 3,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.02 + Math.random() * 0.03
+      });
+    }
+
+    const STARS = Array.from({ length: 120 }, () => ({
+      x: Math.random(), y: Math.random() * 0.85, r: Math.random() * 1.2 + 0.3,
+      phase: Math.random() * Math.PI * 2, speed: 0.02 + Math.random() * 0.03
+    }));
+
+    /* PLANT FLOWER */
+    function plantFlower(x, y) {
+      const colors = getThemeColors();
+      const stemHeight = 130 + Math.random() * 150;
+      const targetY = y < BASE - 60 ? y : BASE - stemHeight;
+      const numPetals = 5 + Math.floor(Math.random() * 4);
+      const petalSize = 16 + Math.random() * 14;
+
+      flowers.push({
+        x: x,
+        baseY: BASE,
+        targetY: targetY,
+        growth: 0,
+        growSpeed: 0.02 + Math.random() * 0.015,
+        numPetals: numPetals,
+        petalSize: petalSize,
+        color1: colors.c1,
+        color2: colors.c2,
+        color3: colors.c3,
+        curl: (Math.random() - 0.5) * 50
+      });
+
+      flowerCount++;
+      const fcEl = document.getElementById('flowerCount');
+      if (fcEl) fcEl.textContent = flowerCount;
+
+      showFloatingText(x, targetY - 30, loveMessages[Math.floor(Math.random() * loveMessages.length)]);
+      createHearts(x, targetY);
+
+      const gcEl = document.getElementById('gardenContinue');
+      if (gcEl && flowerCount >= 3) gcEl.style.display = 'block';
+    }
+
+    /* CLICK & TOUCH INPUT */
+    window.addEventListener('click', (e) => {
+      if (currentScene !== 'garden') return;
+      if (e.target && (e.target.closest('#themeSelector') || e.target.closest('#musicBtn') || e.target.closest('.scene-continue') || e.target.closest('#sceneNav'))) return;
+
+      if (!musicOn) tryPlayMusic();
+      plantFlower(e.clientX, e.clientY);
+    });
+
+    /* TIMER DISPLAY */
+    function updateTimer() {
+      const target = new Date(LOVE_START_DATE);
+      const now = new Date();
+      const diffDays = Math.floor((now - target) / (1000 * 60 * 60 * 24));
+      const el = document.getElementById('daysCount');
+      if (el) el.textContent = diffDays > 0 ? diffDays : '765+';
+    }
+    updateTimer();
+
+    /* RENDER LOOP */
+    function draw() {
+      ctx.fillStyle = 'rgba(6, 0, 3, 0.28)';
+      ctx.fillRect(0, 0, W, H);
+
+      // Render Stars
+      STARS.forEach(st => {
+        st.phase += st.speed;
+        const a = 0.2 + 0.6 * Math.abs(Math.sin(st.phase));
+        ctx.beginPath();
+        ctx.arc(st.x * W, st.y * H, st.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 230, 240, ${a})`;
+        ctx.fill();
+      });
+
+      // Render Flowers
+      flowers.forEach(f => {
+        if (f.growth < 1) f.growth = Math.min(1, f.growth + f.growSpeed);
+        const easeG = 1 - Math.pow(1 - f.growth, 3);
+        const currY = f.baseY - (f.baseY - f.targetY) * easeG;
+        const midX = f.x + f.curl * Math.sin(f.growth * Math.PI);
+        const midY = (f.baseY + currY) / 2;
+
+        // Stem
+        ctx.beginPath();
+        ctx.moveTo(f.x, f.baseY);
+        ctx.quadraticCurveTo(midX, midY, f.x, currY);
+        ctx.strokeStyle = '#2e6b29';
+        ctx.lineWidth = 3.5 * SC;
+        ctx.stroke();
+
+        // Flower Head
+        if (f.growth > 0.35) {
+          const bloom = (f.growth - 0.35) / 0.65;
+          ctx.save();
+          ctx.translate(f.x, currY);
+          const angleStep = (Math.PI * 2) / f.numPetals;
+          for (let i = 0; i < f.numPetals; i++) {
+            ctx.save();
+            ctx.rotate(i * angleStep + bloom * 0.15);
+            ctx.beginPath();
+            ctx.ellipse(0, -f.petalSize * bloom * 0.6, f.petalSize * bloom * 0.45, f.petalSize * bloom * 0.75, 0, 0, Math.PI * 2);
+            const grad = ctx.createLinearGradient(0, 0, 0, -f.petalSize * bloom);
+            grad.addColorStop(0, f.color2);
+            grad.addColorStop(1, f.color1);
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.restore();
+          }
+          ctx.beginPath();
+          ctx.arc(0, 0, f.petalSize * 0.28 * bloom, 0, Math.PI * 2);
+          ctx.fillStyle = f.color3;
+          ctx.fill();
+          ctx.restore();
+        }
+      });
+
+      // Render Hearts
+      for (let i = hearts.length - 1; i >= 0; i--) {
+        const h = hearts[i];
+        h.x += h.vx;
+        h.y += h.vy;
+        h.vy += 0.09;
+        h.life -= 0.018;
+
+        if (h.life <= 0) {
+          hearts.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.translate(h.x, h.y);
+        ctx.rotate(h.rotation);
+        ctx.scale(h.size / 20 * h.life, h.size / 20 * h.life);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(-10, -10, -15, 5, 0, 15);
+        ctx.bezierCurveTo(15, 5, 10, -10, 0, 0);
+        ctx.fillStyle = h.color;
+        ctx.globalAlpha = h.life;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Render Fireflies
+      fireflies.forEach(ff => {
+        ff.phase += ff.speed;
+        const alpha = 0.3 + 0.6 * Math.abs(Math.sin(ff.phase));
+        ctx.beginPath();
+        ctx.arc((ff.x + Math.sin(ff.phase) * 20) % W, (ff.y + Math.cos(ff.phase) * 15) % H, ff.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 220, 140, ${alpha})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    /* INITIALIZE ON LOAD */
+    window.addEventListener('DOMContentLoaded', () => {
+      resize();
+      plantFlower(W * 0.25, H * 0.45);
+      plantFlower(W * 0.5, H * 0.35);
+      plantFlower(W * 0.75, H * 0.4);
+      draw();
+      tryPlayMusic();
+    });
+  </script>
+</body>
+
+</html>

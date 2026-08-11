@@ -1,0 +1,2 @@
+components/space/SpaceBackground.tsx(27,56): error TS2322: Type '{ orbitRadius: number; orbitSpeed: number; }' is not assignable to type 'IntrinsicAttributes & CinematicCameraProps'.
+  Property 'orbitRadius' does not exist on type 'IntrinsicAttributes & CinematicCameraProps'.

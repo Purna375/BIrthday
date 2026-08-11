@@ -1,0 +1,4 @@
+﻿components/effects/PostProcessing.tsx(15,13): error TS2322: Type 'false | Element' is not assignable to type 'Element'.
+  Type 'boolean' is not assignable to type 'ReactElement<any, any>'.
+components/effects/PostProcessing.tsx(23,13): error TS2322: Type 'false | Element' is not assignable to type 'Element'.
+  Type 'boolean' is not assignable to type 'ReactElement<any, any>'.

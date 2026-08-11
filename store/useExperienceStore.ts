@@ -274,12 +274,10 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
     closePlanetPuzzle: () => set({ activePuzzlePlanetId: null }),
 
     solvePlanetPuzzle: (planetId: string) => {
-        const { solvedPlanetIds, triggerSupernovaBlast } = get();
+        const { solvedPlanetIds } = get();
         if (!solvedPlanetIds.includes(planetId)) {
             set({ solvedPlanetIds: [...solvedPlanetIds, planetId] });
         }
-        set({ activePuzzlePlanetId: null });
-        triggerSupernovaBlast(planetId);
     },
 
     triggerSupernovaBlast: (planetId: string) => {

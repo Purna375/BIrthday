@@ -149,7 +149,7 @@ function PlanetPuzzleModalContent({ planet }: PlanetPuzzleModalContentProps) {
             case 2:
                 return <PhotoGalaxyGift onClose={closePlanetPuzzle} />;
             case 3:
-                return <ReasonsGardenGift />;
+                return <ReasonsGardenGift onClose={closePlanetPuzzle} />;
             case 4:
                 return <DanceVideoGift onClose={closePlanetPuzzle} />;
             case 5:

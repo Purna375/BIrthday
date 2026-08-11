@@ -13,14 +13,22 @@ const REASONS = [
     'Because being with you feels like home.',
 ];
 
-export default function ReasonsGardenGift() {
+interface Props {
+    onClose?: () => void;
+}
+
+export default function ReasonsGardenGift({ onClose }: Props) {
     const [activeTab, setActiveTab] = useState<'garden' | 'reasons'>('garden');
     const closeVaultGift = useExperienceStore((state) => state.closeVaultGift);
     const closePlanetPuzzle = useExperienceStore((state) => state.closePlanetPuzzle);
 
     const handleClose = () => {
-        closeVaultGift();
-        closePlanetPuzzle();
+        if (onClose) {
+            onClose();
+        } else {
+            closeVaultGift();
+            closePlanetPuzzle();
+        }
     };
 
     return (

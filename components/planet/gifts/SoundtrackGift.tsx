@@ -50,6 +50,17 @@ export default function SoundtrackGift({ onClose }: Props) {
 
             {/* Top Bar Floating Controls */}
             <div className="absolute top-4 right-4 md:top-6 md:right-6 z-50 flex items-center gap-3">
+                {onClose && (
+                    <button
+                        onClick={() => {
+                            setIsPlaying(false);
+                            onClose();
+                        }}
+                        className="px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-full bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-all flex items-center gap-2 cursor-pointer shadow-lg"
+                    >
+                        <span>Close ✕</span>
+                    </button>
+                )}
                 {isUnsealed && (
                     <button
                         onClick={() => {

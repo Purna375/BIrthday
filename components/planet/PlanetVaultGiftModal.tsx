@@ -20,13 +20,15 @@ export default function PlanetVaultGiftModal() {
         : PLANETS_DATA[0];
     const dayNumber = unlockedVaultGift ? unlockedVaultGift.dayNumber : 1;
 
-    // Play BGM: Day 1 plays FLute_BGM.mp3, Day 4 plays 3 Movie.mp3
+    // Play BGM: Day 1 plays FLute_BGM.mp3, Day 2 plays Chinni Gundelo Song Bgm.mp3, Day 4 plays 3 Movie.mp3
     useEffect(() => {
         if (!unlockedVaultGift) return;
 
         let trackUrl: string | null = null;
         if (dayNumber === 1) {
             trackUrl = '/audio/planets/FLute_BGM.mp3';
+        } else if (dayNumber === 2) {
+            trackUrl = '/Chinni Gundelo Song Bgm.mp3';
         } else if (dayNumber === 4) {
             trackUrl = '/audio/planets/3 Movie.mp3';
         }

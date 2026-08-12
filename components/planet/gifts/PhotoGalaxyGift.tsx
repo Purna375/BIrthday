@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Heart, Camera } from 'lucide-react';
+import { Sparkles, Heart, Camera, Volume2, VolumeX } from 'lucide-react';
 
 interface Props {
     onClose?: () => void;
@@ -35,6 +35,37 @@ const PHOTOS = [
 export default function PhotoGalaxyGift({ onClose }: Props) {
     const [isRevealed, setIsRevealed] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [isPlayingAudio, setIsPlayingAudio] = useState(true);
+    const bgmRef = useRef<HTMLAudioElement | null>(null);
+
+    // Play Chinni Gundelo Song Bgm.mp3 with auto replay / loop enabled
+    useEffect(() => {
+        const audio = new Audio('/Chinni Gundelo Song Bgm.mp3');
+        audio.loop = true;
+        audio.volume = 0.6;
+        audio.play().catch(() => {
+            setIsPlayingAudio(false);
+        });
+        bgmRef.current = audio;
+
+        return () => {
+            audio.pause();
+            audio.currentTime = 0;
+            bgmRef.current = null;
+        };
+    }, []);
+
+    const toggleAudio = () => {
+        if (bgmRef.current) {
+            if (isPlayingAudio) {
+                bgmRef.current.pause();
+                setIsPlayingAudio(false);
+            } else {
+                bgmRef.current.play().catch(() => {});
+                setIsPlayingAudio(true);
+            }
+        }
+    };
 
     const activePhoto = PHOTOS[activeIndex];
 
@@ -45,6 +76,27 @@ export default function PhotoGalaxyGift({ onClose }: Props) {
 
             {/* Top Bar Floating Controls */}
             <div className="absolute top-4 right-4 md:top-6 md:right-6 z-50 flex items-center gap-3">
+                <button
+                    onClick={toggleAudio}
+                    className={`px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-full border transition-all flex items-center gap-2 cursor-pointer shadow-lg ${isPlayingAudio
+                        ? 'bg-purple-500/30 text-purple-200 border-purple-400/60 shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+                        : 'bg-zinc-900/80 text-zinc-400 border-zinc-700 hover:border-purple-400/50'
+                        }`}
+                    title={isPlayingAudio ? 'Mute Chinni Gundelo BGM' : 'Play Chinni Gundelo BGM'}
+                >
+                    {isPlayingAudio ? (
+                        <>
+                            <Volume2 className="w-4 h-4 text-purple-300 animate-pulse" />
+                            <span>🎵 BGM Playing</span>
+                        </>
+                    ) : (
+                        <>
+                            <VolumeX className="w-4 h-4 text-zinc-400" />
+                            <span>🎵 BGM Paused</span>
+                        </>
+                    )}
+                </button>
+
                 {isRevealed && (
                     <button
                         onClick={() => setIsRevealed(false)}
@@ -56,7 +108,12 @@ export default function PhotoGalaxyGift({ onClose }: Props) {
 
                 {onClose && (
                     <button
-                        onClick={onClose}
+                        onClick={() => {
+                            if (bgmRef.current) {
+                                bgmRef.current.pause();
+                            }
+                            onClose();
+                        }}
                         className="px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-full bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-all flex items-center gap-2 cursor-pointer shadow-lg"
                     >
                         <span>Close ✕</span>

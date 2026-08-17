@@ -13,7 +13,7 @@ const SONGS = [
         title: 'Nuvvu Korukuna Varam',
         artist: 'Lyrics written by your Nani ✍️❤️',
         duration: 'Special Track',
-        src: '/audio/Nuvvu korukuna varam.mp3',
+        src: '/audio/Nuvvu_Korukuna_Varam.mp3',
     }
 ];
 

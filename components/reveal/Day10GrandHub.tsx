@@ -21,7 +21,7 @@ export default function Day10GrandHub({ onOpenStoryBook }: Props) {
     // Handle Thiru Bgm.mp3 when Day 10 Letter (Special Birthday Wishes) is displayed
     useEffect(() => {
         if (activeModal === 'wishes') {
-            const audio = new Audio('/audio/Thiru Bgm.mp3');
+            const audio = new Audio('/audio/Thiru_Bgm.mp3');
             audio.loop = true; // auto restart / loop enabled
             audio.volume = 0.7;
             audio.play().catch(() => {});
@@ -52,10 +52,10 @@ export default function Day10GrandHub({ onOpenStoryBook }: Props) {
             {/* Ambient Background Glow */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-200/60 via-pink-100 to-[#fce7f3] pointer-events-none" />
 
-            {/* Custom Song Hidden Audio Element: Nee Pilupe Naa Paata.mp3 */}
+            {/* Custom Song Hidden Audio Element: Nee_Pilupe_Naa_Paata.mp3 */}
             <audio
                 ref={songAudioRef}
-                src="/audio/Nee Pilupe Naa Paata.mp3"
+                src="/audio/Nee_Pilupe_Naa_Paata.mp3"
                 onEnded={() => setIsPlayingSong(false)}
             />
 

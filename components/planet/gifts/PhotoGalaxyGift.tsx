@@ -38,9 +38,9 @@ export default function PhotoGalaxyGift({ onClose }: Props) {
     const [isPlayingAudio, setIsPlayingAudio] = useState(true);
     const bgmRef = useRef<HTMLAudioElement | null>(null);
 
-    // Play Chinni Gundelo Song Bgm.mp3 with auto replay / loop enabled
+    // Play Chinni_Gundelo_Song_Bgm.mp3 with auto replay / loop enabled
     useEffect(() => {
-        const audio = new Audio('/Chinni Gundelo Song Bgm.mp3');
+        const audio = new Audio('/Chinni_Gundelo_Song_Bgm.mp3');
         audio.loop = true;
         audio.volume = 0.6;
         audio.play().catch(() => {

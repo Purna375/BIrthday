@@ -14,9 +14,9 @@ export default function DanceVideoGift({ onClose }: Props) {
     const [iframeKey, setIframeKey] = useState(0);
     const bgmRef = useRef<HTMLAudioElement | null>(null);
 
-    // Play 3 Movie.mp3 BGM for Day 4 gift with auto replay / loop enabled
+    // Play 3_Movie.mp3 BGM for Day 4 gift with auto replay / loop enabled
     useEffect(() => {
-        const audio = new Audio('/audio/planets/3 Movie.mp3');
+        const audio = new Audio('/audio/planets/3_Movie.mp3');
         audio.loop = true; // auto replay enabled
         audio.volume = 0.6;
         audio.play().catch(() => {});

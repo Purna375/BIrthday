@@ -28,9 +28,9 @@ export default function PlanetVaultGiftModal() {
         if (dayNumber === 1) {
             trackUrl = '/audio/planets/FLute_BGM.mp3';
         } else if (dayNumber === 2) {
-            trackUrl = '/Chinni Gundelo Song Bgm.mp3';
+            trackUrl = '/Chinni_Gundelo_Song_Bgm.mp3';
         } else if (dayNumber === 4) {
-            trackUrl = '/audio/planets/3 Movie.mp3';
+            trackUrl = '/audio/planets/3_Movie.mp3';
         }
 
         if (!trackUrl) return;

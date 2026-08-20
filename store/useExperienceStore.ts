@@ -5,6 +5,24 @@ import { INITIAL_SCENE, SCENE_ORDER } from '@/constants/scenes';
 import { DEFAULT_VOLUME } from '@/constants/audio';
 
 const TOKEN_KEY = 'singularity_auth_token';
+const SOLVED_PLANETS_KEY = 'singularity_solved_planets';
+
+function getSavedSolvedPlanetIds(): string[] {
+    if (typeof window === 'undefined') return [];
+    try {
+        const saved = localStorage.getItem(SOLVED_PLANETS_KEY);
+        return saved ? JSON.parse(saved) : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveSolvedPlanetIdsLocally(ids: string[]) {
+    if (typeof window === 'undefined') return;
+    try {
+        localStorage.setItem(SOLVED_PLANETS_KEY, JSON.stringify(ids));
+    } catch {}
+}
 
 function getCookieToken(): string | null {
     if (typeof document === 'undefined') return null;
@@ -56,7 +74,7 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
     planetViewMode: 'orbit',
 
     // Planet Vault Puzzles & Supernova Blast State
-    solvedPlanetIds: [],
+    solvedPlanetIds: getSavedSolvedPlanetIds(),
     activePuzzlePlanetId: null,
     isSupernovaBlasting: false,
     unlockedVaultGift: null,
@@ -276,8 +294,31 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
     solvePlanetPuzzle: (planetId: string) => {
         const { solvedPlanetIds } = get();
         if (!solvedPlanetIds.includes(planetId)) {
-            set({ solvedPlanetIds: [...solvedPlanetIds, planetId] });
+            const nextSolved = [...solvedPlanetIds, planetId];
+            saveSolvedPlanetIdsLocally(nextSolved);
+            set({ solvedPlanetIds: nextSolved });
         }
+    },
+
+    setSolvedPlanetIds: (ids: string[]) => {
+        saveSolvedPlanetIdsLocally(ids);
+        set({ solvedPlanetIds: ids });
+    },
+
+    hydrateProgress: () => {
+        const saved = getSavedSolvedPlanetIds();
+        if (saved.length > 0) {
+            set({ solvedPlanetIds: saved });
+        }
+    },
+
+    resetProgress: () => {
+        if (typeof window !== 'undefined') {
+            try {
+                localStorage.removeItem(SOLVED_PLANETS_KEY);
+            } catch {}
+        }
+        set({ solvedPlanetIds: [] });
     },
 
     triggerSupernovaBlast: (planetId: string) => {

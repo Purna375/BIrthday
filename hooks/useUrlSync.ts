@@ -36,11 +36,19 @@ export function useUrlSync() {
             const queryScene = searchParams.get('scene')?.toUpperCase();
             const queryPlanet = searchParams.get('planet')?.toLowerCase();
 
-            // Run 30-day auth token validation first
+            // Run local storage hydration
+            useExperienceStore.getState().hydrateProgress();
+            useRevealStore.getState().hydrateReveal();
+
+            // Run 30-day auth token validation
             await checkExistingAuth();
 
             // Parse URL path or search parameters
-            if (pathname.startsWith('/planet/') || queryPlanet) {
+            if (pathname.startsWith('/day10')) {
+                useRevealStore.getState().hydrateReveal();
+                setScene(SceneId.SOLAR_SYSTEM);
+                startExperience();
+            } else if (pathname.startsWith('/planet/') || queryPlanet) {
                 const rawPlanetId = pathname.startsWith('/planet/')
                     ? pathname.replace('/planet/', '').split('/')[0].trim()
                     : queryPlanet;

@@ -70,7 +70,7 @@ export default function SolarSystemTimerHUD() {
     // Secret developer unlock method (Double-click badge to test)
     const handleDevUnlock = () => {
         const ALL_IDS = PLANETS_DATA.map((p) => p.id);
-        useExperienceStore.setState({ solvedPlanetIds: ALL_IDS });
+        useExperienceStore.getState().setSolvedPlanetIds(ALL_IDS);
     };
 
     return (

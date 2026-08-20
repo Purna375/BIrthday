@@ -64,6 +64,9 @@ export interface ExperienceState {
     openPlanetPuzzle: (planetId: string) => void;
     closePlanetPuzzle: () => void;
     solvePlanetPuzzle: (planetId: string) => void;
+    setSolvedPlanetIds: (ids: string[]) => void;
+    hydrateProgress: () => void;
+    resetProgress: () => void;
     triggerSupernovaBlast: (planetId: string) => void;
     closeVaultGift: () => void;
 }

@@ -63,7 +63,7 @@ export function useUrlSync() {
                     enterPlanetSurface(planet.id);
                     startExperience();
                 }
-            } else if (pathname === '/solar-system' || pathname === '/' || queryScene === 'SOLAR_SYSTEM') {
+            } else if (pathname === '/solar-system' || queryScene === 'SOLAR_SYSTEM') {
                 useRevealStore.getState().closeDay10Hub();
                 setScene(SceneId.SOLAR_SYSTEM);
                 exitPlanetSurface();
@@ -72,7 +72,7 @@ export function useUrlSync() {
                 useRevealStore.getState().closeDay10Hub();
                 setScene(SceneId.CELEBRATION);
                 startExperience();
-            } else if (pathname === '/space' || queryScene === 'SPACE') {
+            } else if (pathname === '/' || pathname === '/space' || queryScene === 'SPACE' || queryScene === 'INTRO') {
                 useRevealStore.getState().closeDay10Hub();
                 setScene(SceneId.SPACE);
             }
@@ -94,7 +94,7 @@ export function useUrlSync() {
     useEffect(() => {
         if (typeof window === 'undefined' || !isInitializedRef.current) return;
 
-        let targetPath = '/solar-system';
+        let targetPath = '/';
 
         if (phase === 'hidden_universe' || isDay10Revealing) {
             targetPath = '/day10/singularity';
@@ -108,8 +108,8 @@ export function useUrlSync() {
             }
         } else if (currentScene === SceneId.CELEBRATION) {
             targetPath = '/celebration';
-        } else if (currentScene === SceneId.SPACE) {
-            targetPath = '/space';
+        } else if (currentScene === SceneId.SPACE || currentScene === SceneId.INTRO) {
+            targetPath = '/';
         }
 
         const currentPath = window.location.pathname;

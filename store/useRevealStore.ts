@@ -11,6 +11,7 @@ export type RevealPhase =
 
 interface RevealState {
     isDay10Revealing: boolean;
+    isDay10Unlocked: boolean;
     phase: RevealPhase;
     heartBeatRate: number; // multiplier
     heartOpenAmount: number; // 0.0 to 1.0
@@ -21,6 +22,8 @@ interface RevealState {
 
     // Actions
     triggerDay10Reveal: () => void;
+    openDay10Hub: () => void;
+    closeDay10Hub: () => void;
     resetReveal: () => void;
     setPhase: (phase: RevealPhase) => void;
     hydrateReveal: () => void;
@@ -34,46 +37,65 @@ interface RevealState {
 
 const REVEAL_PHASE_KEY = 'singularity_day10_revealed';
 
-function getSavedRevealPhase(): { phase: RevealPhase; isRevealed: boolean } {
-    if (typeof window === 'undefined') return { phase: 'idle', isRevealed: false };
+function checkSavedDay10Unlocked(): boolean {
+    if (typeof window === 'undefined') return false;
     try {
         const saved = localStorage.getItem(REVEAL_PHASE_KEY);
-        if (saved === 'hidden_universe') {
-            return { phase: 'hidden_universe', isRevealed: true };
-        }
+        return saved === 'hidden_universe' || saved === 'unlocked' || saved === 'true';
     } catch {}
-    return { phase: 'idle', isRevealed: false };
+    return false;
 }
 
-function saveRevealPhaseLocally(phase: RevealPhase) {
+function saveRevealPhaseLocally(unlocked: boolean) {
     if (typeof window === 'undefined') return;
     try {
-        if (phase === 'hidden_universe') {
-            localStorage.setItem(REVEAL_PHASE_KEY, 'hidden_universe');
-        } else if (phase === 'idle') {
+        if (unlocked) {
+            localStorage.setItem(REVEAL_PHASE_KEY, 'unlocked');
+        } else {
             localStorage.removeItem(REVEAL_PHASE_KEY);
         }
     } catch {}
 }
 
-const initialReveal = getSavedRevealPhase();
+const initialUnlocked = checkSavedDay10Unlocked();
 
 export const useRevealStore = create<RevealState>((set) => ({
-    isDay10Revealing: initialReveal.isRevealed,
-    phase: initialReveal.phase,
+    isDay10Revealing: false,
+    isDay10Unlocked: initialUnlocked,
+    phase: 'idle',
     heartBeatRate: 1.0,
-    heartOpenAmount: initialReveal.isRevealed ? 1.0 : 0.0,
-    solarSystemGlow: initialReveal.isRevealed ? 1.0 : 0.0,
-    planetsAligned: initialReveal.isRevealed,
+    heartOpenAmount: initialUnlocked ? 1.0 : 0.0,
+    solarSystemGlow: initialUnlocked ? 1.0 : 0.0,
+    planetsAligned: initialUnlocked,
     whiteFlashOpacity: 0.0,
     heartWarningToast: null,
 
-    triggerDay10Reveal: () => set({ isDay10Revealing: true, phase: 'accelerating_heartbeat' }),
+    triggerDay10Reveal: () => {
+        saveRevealPhaseLocally(true);
+        set({ isDay10Revealing: true, isDay10Unlocked: true, phase: 'accelerating_heartbeat' });
+    },
+
+    openDay10Hub: () => {
+        saveRevealPhaseLocally(true);
+        set({
+            phase: 'hidden_universe',
+            isDay10Revealing: false,
+            isDay10Unlocked: true,
+            heartOpenAmount: 1.0,
+            solarSystemGlow: 1.0,
+            planetsAligned: true,
+        });
+    },
+
+    closeDay10Hub: () => {
+        set({ phase: 'idle', isDay10Revealing: false });
+    },
 
     resetReveal: () => {
-        saveRevealPhaseLocally('idle');
+        saveRevealPhaseLocally(false);
         set({
             isDay10Revealing: false,
+            isDay10Unlocked: false,
             phase: 'idle',
             heartBeatRate: 1.0,
             heartOpenAmount: 0.0,
@@ -85,16 +107,19 @@ export const useRevealStore = create<RevealState>((set) => ({
     },
 
     setPhase: (phase) => {
-        saveRevealPhaseLocally(phase);
-        set({ phase });
+        if (phase === 'hidden_universe') {
+            saveRevealPhaseLocally(true);
+            set({ phase, isDay10Unlocked: true });
+        } else {
+            set({ phase });
+        }
     },
 
     hydrateReveal: () => {
-        const saved = getSavedRevealPhase();
-        if (saved.isRevealed) {
+        const isUnlocked = checkSavedDay10Unlocked();
+        if (isUnlocked) {
             set({
-                isDay10Revealing: true,
-                phase: saved.phase,
+                isDay10Unlocked: true,
                 heartOpenAmount: 1.0,
                 solarSystemGlow: 1.0,
                 planetsAligned: true,

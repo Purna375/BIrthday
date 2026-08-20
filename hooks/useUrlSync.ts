@@ -45,10 +45,11 @@ export function useUrlSync() {
 
             // Parse URL path or search parameters
             if (pathname.startsWith('/day10')) {
-                useRevealStore.getState().hydrateReveal();
+                useRevealStore.getState().openDay10Hub();
                 setScene(SceneId.SOLAR_SYSTEM);
                 startExperience();
             } else if (pathname.startsWith('/planet/') || queryPlanet) {
+                useRevealStore.getState().closeDay10Hub();
                 const rawPlanetId = pathname.startsWith('/planet/')
                     ? pathname.replace('/planet/', '').split('/')[0].trim()
                     : queryPlanet;
@@ -62,14 +63,17 @@ export function useUrlSync() {
                     enterPlanetSurface(planet.id);
                     startExperience();
                 }
-            } else if (pathname === '/solar-system' || queryScene === 'SOLAR_SYSTEM') {
+            } else if (pathname === '/solar-system' || pathname === '/' || queryScene === 'SOLAR_SYSTEM') {
+                useRevealStore.getState().closeDay10Hub();
                 setScene(SceneId.SOLAR_SYSTEM);
                 exitPlanetSurface();
                 startExperience();
             } else if (pathname === '/celebration' || queryScene === 'CELEBRATION') {
+                useRevealStore.getState().closeDay10Hub();
                 setScene(SceneId.CELEBRATION);
                 startExperience();
             } else if (pathname === '/space' || queryScene === 'SPACE') {
+                useRevealStore.getState().closeDay10Hub();
                 setScene(SceneId.SPACE);
             }
 

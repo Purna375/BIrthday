@@ -2,8 +2,9 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Heart, Music, Sparkles, Play, Pause, X, Disc, Volume2, Gift } from 'lucide-react';
+import { BookOpen, Heart, Music, Sparkles, Play, Pause, X, Disc, Volume2, Gift, ArrowLeft } from 'lucide-react';
 import { useAudioStore } from '@/store/useAudioStore';
+import { useRevealStore } from '@/store/useRevealStore';
 
 interface Props {
     onOpenStoryBook: () => void;
@@ -11,6 +12,7 @@ interface Props {
 
 export default function Day10GrandHub({ onOpenStoryBook }: Props) {
     const { playSuccessSFX } = useAudioStore();
+    const closeDay10Hub = useRevealStore((state) => state.closeDay10Hub);
     const [activeModal, setActiveModal] = useState<'wishes' | 'song' | null>(null);
 
     // Audio player state for Custom Song surprise (Nee Pilupe Naa Paata.mp3)
@@ -71,6 +73,15 @@ export default function Day10GrandHub({ onOpenStoryBook }: Props) {
                 preload="auto"
                 onEnded={() => setIsPlayingSong(false)}
             />
+
+            {/* Top Left Return to Solar System Button */}
+            <button
+                onClick={closeDay10Hub}
+                className="absolute top-4 left-4 md:top-6 md:left-6 z-20 px-4 py-2 rounded-full bg-white/95 text-rose-700 font-mono text-xs font-bold border-2 border-pink-300 shadow-lg hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all flex items-center gap-2 cursor-pointer"
+            >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Return to Solar System 🌌</span>
+            </button>
 
             <div className="relative w-full max-w-5xl mx-auto flex flex-col items-center justify-center gap-8 py-6 z-10">
                 {/* Header Title Banner */}

@@ -9,9 +9,12 @@ import StoryBookRealm from './StoryBookRealm';
 
 export default function HiddenUniverseRealm() {
     const phase = useRevealStore((state) => state.phase);
+    const isDay10Unlocked = useRevealStore((state) => state.isDay10Unlocked);
     const whiteFlashOpacity = useRevealStore((state) => state.whiteFlashOpacity);
 
-    const [stage, setStage] = useState<'archery' | 'password_gate' | 'grand_hub' | 'storybook'>('archery');
+    const [stage, setStage] = useState<'archery' | 'password_gate' | 'grand_hub' | 'storybook'>(() => {
+        return isDay10Unlocked ? 'grand_hub' : 'archery';
+    });
 
     return (
         <>

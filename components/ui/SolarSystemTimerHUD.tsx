@@ -12,7 +12,7 @@ export default function SolarSystemTimerHUD() {
     const currentScene = useExperienceStore((state) => state.currentScene);
     const planetViewMode = useExperienceStore((state) => state.planetViewMode);
     const solvedPlanetIds = useExperienceStore((state) => state.solvedPlanetIds);
-    const { heartOpenAmount, setHeartOpenAmount, triggerDay10Reveal, heartWarningToast, showHeartWarningToast } = useRevealStore();
+    const { heartOpenAmount, setHeartOpenAmount, triggerDay10Reveal, openDay10Hub, isDay10Unlocked, heartWarningToast, showHeartWarningToast } = useRevealStore();
 
     const [countdownStr, setCountdownStr] = useState<string>('');
     const [daysLeft, setDaysLeft] = useState<number>(9);
@@ -56,14 +56,18 @@ export default function SolarSystemTimerHUD() {
     const isAllKeysCollected = solvedCount === 9;
 
     const handleToggleHeartOpen = () => {
-        if (!isAllKeysCollected) {
+        if (!isAllKeysCollected && !isDay10Unlocked) {
             showHeartWarningToast('You need to collect all 9 vault keys before opening the Heart Sun.');
             return;
         }
-        const nextState = heartOpenAmount > 0 ? 0.0 : 1.0;
-        setHeartOpenAmount(nextState);
-        if (nextState > 0) {
-            triggerDay10Reveal();
+        if (isDay10Unlocked) {
+            openDay10Hub();
+        } else {
+            const nextState = heartOpenAmount > 0 ? 0.0 : 1.0;
+            setHeartOpenAmount(nextState);
+            if (nextState > 0) {
+                triggerDay10Reveal();
+            }
         }
     };
 
@@ -111,7 +115,7 @@ export default function SolarSystemTimerHUD() {
 
                     {/* Countdown / Unlock Status Banner */}
                     <div className="text-xs md:text-sm font-extrabold tracking-wider text-amber-200 font-mono">
-                        {isAllKeysCollected ? (
+                        {isAllKeysCollected || isDay10Unlocked ? (
                             <span className="text-emerald-400 animate-pulse flex items-center gap-1.5 justify-center">
                                 ✨ DAY 10 SINGULARITY FINALE UNLOCKED ✨
                             </span>
@@ -142,13 +146,13 @@ export default function SolarSystemTimerHUD() {
                         <button
                             onClick={handleToggleHeartOpen}
                             className={`px-4 py-1.5 rounded-full text-xs font-mono font-extrabold uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-lg ${
-                                isAllKeysCollected
+                                isAllKeysCollected || isDay10Unlocked
                                     ? 'bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white border border-rose-300 shadow-[0_0_20px_rgba(244,114,182,0.6)] animate-bounce'
                                     : 'bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/40'
                             }`}
                         >
-                            <Heart className={`w-3.5 h-3.5 ${isAllKeysCollected ? 'fill-white text-white' : 'text-rose-400'}`} />
-                            <span>{isAllKeysCollected ? 'Open Heart Sun 💖' : 'Open Heart'}</span>
+                            <Heart className={`w-3.5 h-3.5 ${isAllKeysCollected || isDay10Unlocked ? 'fill-white text-white' : 'text-rose-400'}`} />
+                            <span>{isDay10Unlocked ? 'View Day 10 Gift 🎁' : isAllKeysCollected ? 'Open Heart Sun 💖' : 'Open Heart'}</span>
                         </button>
                     </div>
 
